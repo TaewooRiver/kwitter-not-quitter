@@ -4,7 +4,8 @@ import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } f
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [newAccount, setNewaccount] = useState(true);
+  const [newAccount, setNewAccount] = useState(false);
+  const [error, setError] = useState("");
   const onChange = (event) => {
     const {target: {name, value}} = event;
     if(name === "email"){
@@ -26,9 +27,10 @@ const Auth = () => {
       }
       console.log(data);
     } catch(err) {
-      console.log(err)
+      setError(err.message)
     }
-  }
+  };
+  const toggleAcccount =() => setNewAccount(prev => !prev)
   return (<div>
     <form onSubmit={onSubmit}>
       <input 
@@ -48,7 +50,9 @@ const Auth = () => {
         onChange={onChange}
       />
       <input type="submit" value={newAccount ? "Create Acccount" : "Log In"} />
+      {error}
     </form>
+    <span onClick={toggleAcccount}>{newAccount ? "Sign In" : "Create Account"}</span>
     <div>
       <button>Continue With Google</button>
     </div>
