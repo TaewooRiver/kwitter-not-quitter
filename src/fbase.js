@@ -4,6 +4,7 @@ import { getAuth } from "firebase/auth";
 import "firebase/auth"
 import "firebase/compat/firestore"
 import "firebase/compat/storage"
+import "firebase/database"
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
