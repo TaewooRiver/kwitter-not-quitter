@@ -1,5 +1,11 @@
 import React, {useState} from "react";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+import { 
+  GoogleAuthProvider, 
+  getAuth, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword,
+  signInWithPopup} from "firebase/auth";
+import { authService, firebaseInstance } from "fbase";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -31,6 +37,30 @@ const Auth = () => {
     }
   };
   const toggleAcccount =() => setNewAccount(prev => !prev)
+  const onSocialClick = async (event) => {
+    const {target:{ name }} = event;
+    
+    try{
+      if (name==="google"){
+        const auth = getAuth();
+        const provider = new GoogleAuthProvider();
+        signInWithPopup(auth, provider)
+          .then((result) => {
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken;
+            const user = result.user;
+          }).catch((error) => {
+            console.log(error);
+          })
+        /* const provider = new GoogleAuthProvider();
+        const result = await signInWithPopup(authService, provider);
+        console.log(result)
+        const credential = GoogleAuthProvider.credentialFromResult(result); */
+      }
+    } catch(err) {
+      console.log(err);
+    }
+  };
   return (<div>
     <form onSubmit={onSubmit}>
       <input 
@@ -54,7 +84,7 @@ const Auth = () => {
     </form>
     <span onClick={toggleAcccount}>{newAccount ? "Sign In" : "Create Account"}</span>
     <div>
-      <button>Continue With Google</button>
+      <button onClick={onSocialClick} name="google">Continue With Google</button>
     </div>
   </div>) 
 }
