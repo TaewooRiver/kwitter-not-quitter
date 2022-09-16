@@ -1,5 +1,7 @@
 import React, {useState} from "react";
 import { deleteDoc, getFirestore, doc, updateDoc } from 'firebase/firestore';
+import { ref, deleteObject } from "firebase/storage";
+import { storageService } from "fbase";
 
 const Nweet = ({nweetObj, isOwner}) => {
   const [editing, setEditing] = useState(false);
@@ -8,8 +10,9 @@ const Nweet = ({nweetObj, isOwner}) => {
     const ok = window.confirm("정말로 삭제하시겠습니까?");
     if (ok) {
       // delete nweet
-      console.log(nweetObj.id);
-      await deleteDoc(doc(getFirestore(), "nweets", nweetObj.id))
+      //console.log(nweetObj.id);
+      await deleteDoc(doc(getFirestore(), "nweets", nweetObj.id));
+      await deleteObject(ref(storageService, nweetObj.attachmentUrl));
     }
   }
   const toggleEditing = (event) => {
@@ -51,6 +54,7 @@ const Nweet = ({nweetObj, isOwner}) => {
       ) : (
         <>
           <h4>{nweetObj.nweet}</h4>
+          {nweetObj.attachmentUrl && <img src={nweetObj.attachmentUrl} width="50px" height="50px" />}
           <h1>{isOwner}</h1>
           {isOwner && (
             <>

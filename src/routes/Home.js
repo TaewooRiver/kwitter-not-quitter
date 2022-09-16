@@ -1,13 +1,15 @@
-import { dbService } from "fbase";
+import { dbService, storageService } from "fbase";
 import { collection, addDoc, serverTimestamp, query, doc, onSnapshot, getDocs, orderBy } from "firebase/firestore";
 import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import Nweet from "components/Nweet";
+import {ref, uploadString, getDownloadURL } from "@firebase/storage"
+import { v4 as uuidv4 } from "uuid";
 const Home = ({userObj}) => {
   console.log(userObj)
   const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState([]);
-  const [attachment, setAttachment] = useState();
+  const [attachment, setAttachment] = useState("");
   /* const getNweets = async () => {
     const querySnapshots = await getDocs(collection(dbService, "nweets"));
     querySnapshots.forEach(document => {
@@ -29,18 +31,28 @@ const Home = ({userObj}) => {
     setNweets(nweetArray)
     })
   }, []);
-    
   const onSubmit = async (event) => {
     event.preventDefault();
-    try{
-      const docRef = await addDoc(collection(dbService, "nweets"), {
-      nweet,
-      createdAt: serverTimestamp(),
-      creatorId: userObj.uid,
-    });} catch(e) {
+    let attachmentUrl = ""
+    try {
+      if (attachment !== ""){
+        const attachmentRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
+        const response = await uploadString(attachmentRef, attachment, "data_url");
+        attachmentUrl = await getDownloadURL(response.ref);
+      }
+      const nweetObj = {
+        nweet,
+        createdAt: serverTimestamp(),
+        creatorId: userObj.uid,
+        attachmentUrl,
+      }
+      await addDoc(collection(dbService, "nweets"), nweetObj);
+    } catch(e) {
       console.error("Error adding document: ", e);
     }
     setNweet("");
+    setAttachment("");
+    fileInput.current.value = null;
   };
   const onChange = (event) => {
     const { target:{value}} = event;
@@ -57,7 +69,7 @@ const Home = ({userObj}) => {
     reader.readAsDataURL(theFile);
   }
   const onClearAttachment = () => {
-    setAttachment(null)
+    setAttachment("")
     fileInput.current.value = null;
   };
   const fileInput = useRef();
