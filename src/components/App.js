@@ -1,6 +1,9 @@
 import AppRouter from "components/Router";
 import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { authService } from "fbase";
+import { updateProfile } from "firebase/auth";
+
 function App() {
   const [init, setInit] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -11,16 +14,39 @@ function App() {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setIsLoggedIn(true);
-        setUserObj(user)
+        setUserObj({
+          displayName: user.displayName,
+          uid: user.uid,
+          updateProfile: (args) => updateProfile(
+            user, {displayName:user.displayName}
+          ),
+        } )
       } else {
         setIsLoggedIn(false);
       }
       setInit(true)
     })
   }, []);
+  const refreshUser = () => {
+    const user = authService.currentUser;
+    setUserObj({
+      displayName: user.displayName,
+      uid: user.uid,
+      updateProfile: (args) => updateProfile(
+        user, {displayName:user.displayName}
+      ),    
+    });
+  }
   return (
   <>
-    {init ? <AppRouter isLoggedIn={isLoggedIn} userObj={userObj}/> : "Initializing..."}
+    {init ? (
+      <AppRouter 
+        refreshUser={refreshUser}
+        isLoggedIn={isLoggedIn} 
+        userObj={userObj}
+      />
+    ) : (
+      "Initializing...")}
     <footer>&copy; Kwitter {new Date().getFullYear()}</footer>
   </>
   );
