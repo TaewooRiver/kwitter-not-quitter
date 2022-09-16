@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/TaewooRiver/kwitter-not-quitter/static/js/main.396f83cf.js",
-    "index.html": "/TaewooRiver/kwitter-not-quitter/index.html",
-    "main.396f83cf.js.map": "/TaewooRiver/kwitter-not-quitter/static/js/main.396f83cf.js.map"
+    "main.js": "/kwitter-not-quitter/static/js/main.6a6436f9.js",
+    "index.html": "/kwitter-not-quitter/index.html",
+    "main.6a6436f9.js.map": "/kwitter-not-quitter/static/js/main.6a6436f9.js.map"
   },
   "entrypoints": [
-    "static/js/main.396f83cf.js"
+    "static/js/main.6a6436f9.js"
   ]
 }
