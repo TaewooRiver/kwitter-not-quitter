@@ -10,6 +10,7 @@ export default ({ refreshUser, userObj }) => {
   const onLogOutClick = () => {
     authService.signOut();
     history.push("/");
+    
   }
   const getMyNweets = async() => {
     const nweetsRef = collection(dbService, "nweets");
